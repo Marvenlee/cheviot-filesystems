@@ -56,11 +56,11 @@ struct Config
 /*
  * Config settings, tweak as needed
  */
-#define NMSG_BACKLOG 							1					/* Number of inflight messages this driver can handle */
-#define NR_CACHE_BLOCKS          64         /* Keep 64 blocks in the local block cache */
-#define NR_INODES                64         /* size of cached inode table */
+#define NMSG_BACKLOG 							1			/* Number of inflight messages this driver can handle */
+#define NR_CACHE_BLOCKS         128     /* Keep 128 blocks in the local block cache */
+#define NR_INODES                64     /* size of cached inode table */
 #define INODE_HASH_SIZE         128
-#define BDFLUSH_INTERVAL_SECS     10
+#define BDFLUSH_INTERVAL_SECS    10
 
 /*
  * Miscellaneous
