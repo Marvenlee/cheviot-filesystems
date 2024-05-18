@@ -56,7 +56,7 @@ void init(int argc, char *argv[])
 
   log_info("ext2fs: read superblock");
   
-  if ((cache = init_block_cache(block_fd, NR_CACHE_BLOCKS, sb_block_size)) == NULL) {
+  if ((cache = init_block_cache(block_fd, NR_CACHE_BLOCKS, sb_block_size, NR_READAHEAD_BLOCKS)) == NULL) {
     panic("ext2fs init block cache failed");
   }
 

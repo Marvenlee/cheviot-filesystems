@@ -104,7 +104,7 @@ int read_chunk(struct inode *inode, off64_t position, size_t off, size_t chunk_s
 	  return read_nonexistent_block(msg_off, chunk_size);
   }
 
-  buf = get_block(cache, block, BLK_READ);  
+  buf = get_block_readahead(cache, block);
   assert(buf != NULL);
   
   sc = writemsg(portid, msgid, (uint8_t *)buf->data+off, chunk_size, msg_off);
