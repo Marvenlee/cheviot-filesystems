@@ -17,7 +17,7 @@
  * This is partially based on the Minix Ext2 FS superblock.c sources
  */
  
-#define LOG_LEVEL_INFO
+#define LOG_LEVEL_WARN
 
 #include "ext2.h"
 #include "globals.h"
@@ -31,8 +31,6 @@ int read_superblock(void)
 {
   int sz;
 
-	log_info("read_superblock()");
-	
   // Read 1024 bytes from disk into the ondisk_superblock
   lseek64(block_fd, SUPERBLOCK_OFFSET, SEEK_SET);
   sz = read(block_fd, &ondisk_superblock, SUPERBLOCK_SIZE);
@@ -149,8 +147,6 @@ int read_superblock(void)
 #else
 	sb_out_range_s = sb_triple_ind_s + sb_addr_in_block2 * sb_addr_in_block;
 #endif
-
-	log_info("***sb_out_range_s: %08x", (uint32_t)sb_out_range_s);
 
   return 0;
 }

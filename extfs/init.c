@@ -5,7 +5,7 @@
  */
 
 
-#define LOG_LEVEL_INFO
+#define LOG_LEVEL_WARN
 
 #include <stdint.h>
 #include <stdarg.h>
@@ -24,8 +24,6 @@ void init(int argc, char *argv[])
   int sc;
   struct superblock *sp;
   
-  log_info("ext2fs: init");
-  
   memset (&superblock, 0, sizeof superblock);
   
   determine_cpu_endianness();
@@ -41,8 +39,6 @@ void init(int argc, char *argv[])
     panic("ext2fs failed to open block device");
   }
 
-  log_info("ext2fs: opened block device");
-
   // FIXME: Save the partition size returned by block stat, compare to
   // FIXME: Save the st_dev of the block device, this FS will be mounted with same value  
   
@@ -53,8 +49,6 @@ void init(int argc, char *argv[])
   if (read_superblock() != 0) {
     panic("ext2fs failed to read superblock");
   }
-
-  log_info("ext2fs: read superblock");
   
   if ((cache = init_block_cache(block_fd, NR_CACHE_BLOCKS, sb_block_size, NR_READAHEAD_BLOCKS)) == NULL) {
     panic("ext2fs init block cache failed");

@@ -21,7 +21,7 @@
  * assumes the role of the real root process. 
  */
 
-#define LOG_LEVEL_INFO
+#define LOG_LEVEL_WARN
 
 #include "ifs.h"
 #include "globals.h"

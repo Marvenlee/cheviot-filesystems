@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#define LOG_LEVEL_WARN
+
 #include "globals.h"
 #include "devfs.h"
 #include "sys/debug.h"
@@ -36,8 +38,6 @@
  */
 void init (int argc, char *argv[])
 {
-  log_info("devfs - init");
-
   if (init_devfs() != 0) {
     exit(-1);
   }

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#define LOG_LEVEL_WARN
+
 #include "globals.h"
 #include "ifs.h"
 #include "sys/debug.h"
@@ -72,9 +74,7 @@ void init_ifs(int argc, char *argv[])
 
   log_info("mounting root");
 
-  mount_root();
-  
-  log_info("root mounted");
+  mount_root();  
 }
 
 

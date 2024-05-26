@@ -5,7 +5,7 @@
  */
 
 
-#define LOG_LEVEL_INFO
+#define LOG_LEVEL_WARN
 
 #include <stdint.h>
 #include <time.h>
@@ -25,8 +25,6 @@ int main(int argc, char *argv[])
   struct timespec now, next_bdflush, diff;
   struct timespec bdflush_interval;
   bool elapsed;
-  
-  log_info("starting !!!");
   
   init(argc, argv);
   
