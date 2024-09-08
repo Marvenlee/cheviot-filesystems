@@ -104,6 +104,10 @@ int init_devfs(void)
   devfs_inode_table[0].parent_inode_nr = 0;    
   devfs_inode_table[0].name[0] = '\0';
 
+  devfs_inode_table[0].inode_nr = 1;
+  devfs_inode_table[0].parent_inode_nr = 0;
+  strcpy(devfs_inode_table[0].name, "tty");
+  
   for (int t=1; t< DEVFS_MAX_INODE; t++) {
     devfs_inode_table[t].inode_nr = t;
     devfs_inode_table[t].parent_inode_nr = 0;    
@@ -112,6 +116,7 @@ int init_devfs(void)
   
   return 0;
 }
+
 
 /*
  *
@@ -128,8 +133,12 @@ int mount_device(void)
   mnt_stat.st_blksize = 512;
   mnt_stat.st_size = 0;
   mnt_stat.st_blocks = 0;
-  
+
+#if 0  
+  portid = createmsgport("/dev", MNTF_DEVFS_TTY_SPECIAL, &mnt_stat, NMSG_BACKLOG);
+#else
   portid = createmsgport("/dev", 0, &mnt_stat, NMSG_BACKLOG);
+#endif
   
   if (portid == -1) {
     log_error("Failed to mount /dev\n");

@@ -22,24 +22,14 @@ int main(int argc, char *argv[])
   struct fsreq req;
   int sc;
   int nevents;
-  struct timespec now, next_bdflush, diff;
-  struct timespec bdflush_interval;
-  bool elapsed;
   
   init(argc, argv);
-  
-  bdflush_interval.tv_sec = BDFLUSH_INTERVAL_SECS;
-  bdflush_interval.tv_nsec = 0;
-
-  clock_gettime(CLOCK_MONOTONIC, &now);
-
-  add_timespec(&next_bdflush, &now, &bdflush_interval);
   
   EV_SET(&ev, portid, EVFILT_MSGPORT, EV_ADD | EV_ENABLE, 0, 0, 0); 
   kevent(kq, &ev, 1, NULL, 0, NULL);
 
   while (1) {
-    nevents = kevent(kq, NULL, 0, &ev, 1, &bdflush_interval);
+    nevents = kevent(kq, NULL, 0, &ev, 1, NULL);
   
     if (nevents == 1 && ev.ident == portid && ev.filter == EVFILT_MSGPORT) {
       while ((sc = getmsg(portid, &msgid, &req, sizeof req)) == sizeof req) {      
@@ -113,14 +103,6 @@ int main(int argc, char *argv[])
         exit(-1);
       }
     }
-
-	  clock_gettime(CLOCK_MONOTONIC, &now);			
-  	elapsed = diff_timespec(&diff, &now, &next_bdflush);
-    
-		if (elapsed) {
-			bdflush(portid);
-      add_timespec(&next_bdflush, &bdflush_interval, &now);
-  	}
   }
 
   exit(0);
