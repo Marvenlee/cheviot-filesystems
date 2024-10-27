@@ -134,7 +134,7 @@ void fatLookup(msgid_t msgid, struct fsreq *req)
   struct FatNode *node;
   int sz;
   
-  readmsg(portid, msgid, name, req->args.lookup.name_sz, sizeof *req);
+  readmsg(portid, msgid, name, req->args.lookup.name_sz, 0);
 
   KLog ("fatLookup, name = %s", name);
 
@@ -216,6 +216,8 @@ void fatRead(msgid_t msgid, struct fsreq *req)
   if (nbytes_read > 1) {
     nbytes_read = writemsg(portid, msgid, read_buf, nbytes_read, 0);
   }  
+
+  replymsg(portid, msgid, nbytes_read, NULL, 0);
 }
 
 
@@ -305,7 +307,7 @@ void fatReadDir(msgid_t msgid, struct fsreq *req)
     }
   }
 
-  writemsg(portid, msgid, dirents_buf, reply.args.readdir.nbytes_read, sizeof reply);
+  writemsg(portid, msgid, dirents_buf, reply.args.readdir.nbytes_read, 0);
 
   reply.args.readdir.offset = cookie;
 
@@ -375,7 +377,7 @@ void fatMkDir(msgid_t msgid, struct fsreq *req)
   char name[256];
 
 
-  readmsg(portid, msgid, name, req->args.mkdir.name_sz, sizeof *req);
+  readmsg(portid, msgid, name, req->args.mkdir.name_sz, 0);
 
   parent = FindNode(req->args.mkdir.dir_inode_nr);
 
@@ -466,7 +468,7 @@ void fatUnlink(msgid_t msgid, struct fsreq *req)
     return;
   }
   
-  readmsg(portid, msgid, name, req->args.unlink.name_sz, sizeof *req);
+  readmsg(portid, msgid, name, req->args.unlink.name_sz, 0);
 
   rc = lookup(parent, name, &node);  
 
@@ -520,7 +522,7 @@ void fatRmDir(msgid_t msgid, struct fsreq *req)
     return;
   }
 
-  readmsg(portid, msgid, name, req->args.rmdir.name_sz, sizeof *req);
+  readmsg(portid, msgid, name, req->args.rmdir.name_sz, 0);
 
   rc = lookup(parent, name, &node);  
 

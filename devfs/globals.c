@@ -25,3 +25,5 @@ struct DevfsNode devfs_inode_table[DEVFS_MAX_INODE];
 uint8_t dirents_buf[DIRENTS_BUF_SZ];
 struct Config config;
 
+bool shutdown;
+

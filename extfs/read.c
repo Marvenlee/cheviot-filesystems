@@ -7,7 +7,7 @@
  *   December 2023 (Marven Gilhespie) 
  */
 
-#define LOG_LEVEL_WARN
+#define LOG_LEVEL_ERROR
 
 #include "ext2.h"
 #include "globals.h"
@@ -29,6 +29,8 @@ ssize_t read_file(ino_t ino_nr, size_t nrbytes, off64_t position)
   size_t chunk_size;    // size of partial block of data we are currently reading
   struct inode *inode;  // inode of file to read from
   int res;              // result
+
+//  log_info("read_file:ino:%u, nrbytes:%u, position:%u %u", ino_nr, nrbytes, (uint32_t)(position>>32), (uint32_t)position);
 
 
   if ((inode = find_inode(ino_nr)) == NULL) {

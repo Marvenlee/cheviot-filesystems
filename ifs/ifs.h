@@ -78,6 +78,5 @@ struct Config
 void init_ifs(int argc, char *argv[]);
 void mount_root(void);
 
-
 #endif
 

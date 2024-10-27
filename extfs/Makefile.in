@@ -291,7 +291,7 @@ extfs_SOURCES = \
   write.c
 
 extfs_LDADD = -lblockdev
-AM_CFLAGS = -O0 -std=c99 -g2 -march=armv8-a
+AM_CFLAGS = -O0 -std=c99 -g2 -march=armv8-a -Wall
 all: all-am
 
 .SUFFIXES:

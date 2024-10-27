@@ -41,6 +41,7 @@ static void devfsClose(msgid_t msgid_t, struct fsreq *req);
 static void devfsReaddir(msgid_t msgid_t, struct fsreq *req);
 static void devfsMknod(msgid_t msgid_t, struct fsreq *req);
 static void devfsUnlink(msgid_t msgid_t, struct fsreq *req);
+void sigterm_handler(int signo);
 
 
 /*
@@ -53,13 +54,22 @@ int main(int argc, char *argv[])
   int nevents;
   struct kevent ev;
   msgid_t msgid;
+  struct sigaction sact;
   
   init(argc, argv);
+
+  sact.sa_handler = &sigterm_handler;
+  sigemptyset(&sact.sa_mask);
+  sact.sa_flags = 0;
+  
+  if (sigaction(SIGTERM, &sact, NULL) != 0) {
+    exit(-1);
+  }
 
   EV_SET(&ev, portid, EVFILT_MSGPORT, EV_ADD | EV_ENABLE, 0, 0, 0); 
   kevent(kq, &ev, 1,  NULL, 0, NULL);
 
-  while (1) {
+  while (!shutdown) {
     errno = 0;
     nevents = kevent(kq, NULL, 0, &ev, 1, NULL);
 
@@ -115,7 +125,7 @@ static void devfsLookup(msgid_t msgid, struct fsreq *req)
 
   memset (&reply, 0, sizeof reply);
 
-  readmsg(portid, msgid, name, req->args.lookup.name_sz, sizeof *req);
+  readmsg(portid, msgid, name, req->args.lookup.name_sz, 0);
   name[60] = '\0';
 
   if (req->args.lookup.dir_inode_nr < 0 || req->args.lookup.dir_inode_nr >= DEVFS_MAX_INODE) {
@@ -214,7 +224,7 @@ static void devfsReaddir(msgid_t msgid, struct fsreq *req)
   }
 
   
-  writemsg(portid, msgid, &dirents_buf[0], dirent_buf_sz, sizeof reply);
+  writemsg(portid, msgid, &dirents_buf[0], dirent_buf_sz, 0);
 
   reply.args.readdir.offset = cookie;
   replymsg(portid, msgid, dirent_buf_sz, &reply, sizeof reply);
@@ -234,7 +244,7 @@ static void devfsMknod(msgid_t msgid, struct fsreq *req)
 
   memset (&reply, 0, sizeof reply);
   
-  readmsg(portid, msgid, name, req->args.mknod.name_sz, sizeof *req);
+  readmsg(portid, msgid, name, req->args.mknod.name_sz, 0);
   
   dir_node = &devfs_inode_table[req->args.mknod.dir_inode_nr];
 
@@ -285,4 +295,14 @@ static void devfsUnlink(msgid_t msgid, struct fsreq *req)
 {
   replymsg(portid, msgid, -ENOTSUP, NULL, 0);
 }
+
+
+/*
+ *
+ */
+void sigterm_handler(int signo)
+{
+  shutdown = true;
+}
+
 

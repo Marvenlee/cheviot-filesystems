@@ -53,6 +53,7 @@ static void ifs_close(msgid_t msgid, struct fsreq *req);
 static void ifs_read(msgid_t msgid, struct fsreq *req);
 static void ifs_write(msgid_t msgid, struct fsreq *req);
 static void ifs_readdir(msgid_t msgid, struct fsreq *req);
+void sigterm_handler(int signo);
 
 
 /* @Brief   Main function of Initial File System (IFS) driver and root process
@@ -152,11 +153,20 @@ static void ifs_message_loop(void)
   int nevents;
   struct kevent ev;
   msgid_t msgid;
+  struct sigaction sact;
+  
+  sact.sa_handler = &sigterm_handler;
+  sigemptyset(&sact.sa_mask);
+  sact.sa_flags = 0;
+  
+  if (sigaction(SIGTERM, &sact, NULL) != 0) {
+    exit(-1);
+  }
   
   EV_SET(&ev, portid, EVFILT_MSGPORT, EV_ADD | EV_ENABLE, 0, 0, 0); 
   kevent(kq, &ev, 1,  NULL, 0, NULL);
 
-  while (1) {
+  while (!shutdown) {
     errno = 0;
 
     nevents = kevent(kq, NULL, 0, &ev, 1, NULL);
@@ -211,7 +221,7 @@ static void ifs_lookup(msgid_t msgid, struct fsreq *req)
   char name[256];
   ssize_t sz;
     
-  sz = readmsg(portid, msgid, name, req->args.lookup.name_sz, sizeof *req);
+  sz = readmsg(portid, msgid, name, req->args.lookup.name_sz, 0);
   name[255] = '\0';
 
   ifs_dir_node = &ifs_inode_table[req->args.lookup.dir_inode_nr];
@@ -275,7 +285,7 @@ static void ifs_read(msgid_t msgid, struct fsreq *req)
     nbytes_read = writemsg(portid, msgid, src, nbytes_read, 0);
   }
 
-  replymsg(portid, msgid, nbytes_read, NULL, 0);  
+  replymsg(portid, msgid, nbytes_read, NULL, 0);
 }
 
 
@@ -340,10 +350,20 @@ static void ifs_readdir(msgid_t msgid, struct fsreq *req)
     cookie++;
   }
 
-  writemsg(portid, msgid, &dirents_buf[0], dirent_buf_sz, sizeof reply);
+  writemsg(portid, msgid, &dirents_buf[0], dirent_buf_sz, 0);
 
   reply.args.readdir.offset = cookie;
   replymsg(portid, msgid, dirent_buf_sz, &reply, sizeof reply);
 }
+
+
+/*
+ *
+ */
+void sigterm_handler(int signo)
+{
+  shutdown = true;
+}
+
 
 

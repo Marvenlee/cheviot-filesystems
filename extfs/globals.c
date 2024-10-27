@@ -64,3 +64,5 @@ inode_list_t unused_inode_list;
 inode_list_t hash_inodes[INODE_HASH_SIZE];
 struct inode inode_cache[NR_INODES];
 
+bool shutdown;
+

@@ -43,4 +43,6 @@ extern size_t ifs_image_size;
 extern struct IFSNode *ifs_inode_table;
 extern uint8_t dirents_buf[DIRENTS_BUF_SZ];
 
+extern bool shutdown;
+
 #endif

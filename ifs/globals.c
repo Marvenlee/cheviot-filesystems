@@ -29,3 +29,4 @@ size_t ifs_image_size;
 struct IFSNode *ifs_inode_table;
 uint8_t dirents_buf[DIRENTS_BUF_SZ];
 
+bool shutdown;

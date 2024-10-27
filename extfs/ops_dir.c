@@ -27,7 +27,7 @@ void ext2_lookup(struct fsreq *req)
     
   memset(&reply, 0, sizeof reply);  
     
-  readmsg(portid, msgid, name, req->args.lookup.name_sz, sizeof *req);
+  readmsg(portid, msgid, name, req->args.lookup.name_sz, 0);
 
   dir_inode = get_inode(req->args.lookup.dir_inode_nr);
   
@@ -97,7 +97,7 @@ void ext2_readdir(struct fsreq *req)
   dirents_read_sz = get_dirents(dir_inode, &cookie, readdir_buf, dirents_sz);
 
   if (dirents_read_sz > 0) {
-    writemsg(portid, msgid, readdir_buf, dirents_read_sz, sizeof reply);
+    writemsg(portid, msgid, readdir_buf, dirents_read_sz, 0);
   }
 
   put_inode(dir_inode);  
@@ -122,7 +122,7 @@ void ext2_mkdir(struct fsreq *req)
   struct inode *inode;
   char name[NAME_MAX+1];
           
-  readmsg(portid, msgid, name, req->args.mkdir.name_sz, sizeof *req);
+  readmsg(portid, msgid, name, req->args.mkdir.name_sz, 0);
 
   dir_inode = get_inode(req->args.mkdir.dir_inode_nr);
 
@@ -190,7 +190,7 @@ void ext2_rmdir(struct fsreq *req)
 
   log_info("ext2_rmdir");
  
-  readmsg(portid, msgid, name, req->args.rmdir.name_sz, sizeof *req);
+  readmsg(portid, msgid, name, req->args.rmdir.name_sz, 0);
 
   dir_inode = get_inode(req->args.rmdir.dir_inode_nr);
   

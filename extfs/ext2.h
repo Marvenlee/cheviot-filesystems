@@ -627,6 +627,7 @@ void inode_markclean(struct inode *inode);
 
 // main.c
 int main(int argc, char *argv[]);
+void sigterm_handler(int signo);
 
 // ops_dir.c
 void ext2_lookup(struct fsreq *req);

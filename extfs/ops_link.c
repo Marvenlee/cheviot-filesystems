@@ -42,8 +42,8 @@ void ext2_rename(struct fsreq *req)
   src_name_sz = req->args.rename.src_name_sz;
   dst_name_sz = req->args.rename.dst_name_sz;
   
-  readmsg(portid, msgid, src_name, src_name_sz, sizeof *req);
-  readmsg(portid, msgid, dst_name, dst_name_sz, sizeof *req + src_name_sz);
+  readmsg(portid, msgid, src_name, src_name_sz, 0);
+  readmsg(portid, msgid, dst_name, dst_name_sz, src_name_sz);
 
   src_dir_inode = get_inode(req->args.rename.src_dir_inode_nr);
   
@@ -116,7 +116,7 @@ void ext2_mknod(struct fsreq *req)
   uid = req->args.mknod.uid;
   gid = req->args.mknod.gid;
    
-  readmsg(portid, msgid, name, req->args.mknod.name_sz, sizeof *req);
+  readmsg(portid, msgid, name, req->args.mknod.name_sz, 0);
 
   dir_inode = get_inode(req->args.mknod.dir_inode_nr);
   
@@ -154,7 +154,7 @@ void ext2_unlink(struct fsreq *req)
   ino_t ino_nr;
   int	sc;
 
-  readmsg(portid, msgid, name, req->args.unlink.name_sz, sizeof *req);
+  readmsg(portid, msgid, name, req->args.unlink.name_sz, 0);
 
   dir_inode = get_inode(req->args.unlink.dir_inode_nr);
   

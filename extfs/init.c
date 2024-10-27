@@ -49,8 +49,19 @@ void init(int argc, char *argv[])
   if (read_superblock() != 0) {
     panic("ext2fs failed to read superblock");
   }
+
+  int nr_readahead_blocks;
+  if (sb_block_size == 512) {
+    nr_readahead_blocks = 8;
+  } else if (sb_block_size == 1024) {
+    nr_readahead_blocks = 4;
+  } else if (sb_block_size == 2048) {
+    nr_readahead_blocks = 2;
+  } else {
+    nr_readahead_blocks = NR_READAHEAD_BLOCKS;
+  }
   
-  if ((cache = init_block_cache(block_fd, NR_CACHE_BLOCKS, sb_block_size, NR_READAHEAD_BLOCKS)) == NULL) {
+  if ((cache = init_block_cache(block_fd, NR_CACHE_BLOCKS, sb_block_size, nr_readahead_blocks)) == NULL) {
     panic("ext2fs init block cache failed");
   }
 

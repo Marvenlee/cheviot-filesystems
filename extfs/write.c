@@ -123,7 +123,7 @@ int write_chunk(struct inode *inode, off64_t position, size_t off, size_t chunk_
 
   assert(buf != NULL);
   
-  sc = readmsg(portid, msgid, (uint8_t *)buf->data+off, chunk_size, msg_off + sizeof (struct fsreq));	  
+  sc = readmsg(portid, msgid, (uint8_t *)buf->data+off, chunk_size, msg_off);	  
   block_markdirty(buf);
   put_block(cache, buf);
   

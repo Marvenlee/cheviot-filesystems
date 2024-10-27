@@ -57,7 +57,7 @@ void init_ifs(int argc, char *argv[])
 
   
   if ((ifs_image = virtualallocphys((void *)0x20000000, ifs_image_size, 
-  																  PROT_READ, ifs_image_phys)) == NULL) {
+  																  PROT_READ | CACHE_WRITEBACK, ifs_image_phys)) == NULL) {
   	log_info("Failed to map IFS image into process");
   	exit(EXIT_FAILURE);
   }

@@ -28,7 +28,7 @@ extfs_SOURCES = \
 
 extfs_LDADD = -lblockdev
 
-AM_CFLAGS = -O0 -std=c99 -g2 -march=armv8-a
+AM_CFLAGS = -O0 -std=c99 -g2 -march=armv8-a -Wall
 #-march=armv7ve
 
 

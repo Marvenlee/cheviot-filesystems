@@ -67,7 +67,7 @@ void ext2_create(struct fsreq *req)
   char name[NAME_MAX+1];
   int sc;
         
-  readmsg(portid, msgid, name, req->args.create.name_sz, sizeof *req);
+  readmsg(portid, msgid, name, req->args.create.name_sz, 0);
   
   if ((dir_inode = get_inode(req->args.create.dir_inode_nr)) == NULL) {
     replymsg(portid, msgid, -ENOENT, NULL, 0);

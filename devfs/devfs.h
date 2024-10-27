@@ -51,11 +51,12 @@ struct Config
 
 
 // prototypes
+
+// init.c
 void init (int argc, char *argv[]);
 int process_args(int argc, char *argv[]);
 int init_devfs(void);
 int mount_device(void);
-
 
 #endif
 

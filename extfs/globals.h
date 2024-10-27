@@ -73,5 +73,7 @@ extern inode_list_t unused_inode_list;
 extern inode_list_t hash_inodes[INODE_HASH_SIZE];
 extern struct inode inode_cache[NR_INODES];
 
+extern bool shutdown;
+
 
 #endif

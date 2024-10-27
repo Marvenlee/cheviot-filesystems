@@ -43,5 +43,6 @@ extern uint8_t dirents_buf[DIRENTS_BUF_SZ];
 
 extern struct Config config;
 
+extern bool shutdown;
 
 #endif
