@@ -121,12 +121,17 @@ static void devfsLookup(msgid_t msgid, struct fsreq *req)
   struct fsreply reply;
   struct DevfsNode *devfs_dir_node;
   struct DevfsNode *node;
-  char name[256];
+  char name[DEVFS_NAME_LEN + 1];
 
   memset (&reply, 0, sizeof reply);
 
+  if (req->args.lookup.name_sz > DEVFS_NAME_LEN) {
+    replymsg(portid, msgid, -EINVAL, NULL, 0);
+    return;  
+  }
+
   readmsg(portid, msgid, name, req->args.lookup.name_sz, 0);
-  name[60] = '\0';
+  name[req->args.lookup.name_sz] = '\0';
 
   if (req->args.lookup.dir_inode_nr < 0 || req->args.lookup.dir_inode_nr >= DEVFS_MAX_INODE) {
     replymsg(portid, msgid, -EINVAL, NULL, 0);

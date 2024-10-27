@@ -12,8 +12,7 @@
 #define NMSG_BACKLOG 			8
 #define DEVFS_MAX_INODE 	128
 #define DIRENTS_BUF_SZ 		4096
-
-
+#define DEVFS_NAME_LEN    64
 /*
  *
  */
@@ -22,11 +21,13 @@
 #define ALIGN_DOWN(val, alignment)                              \
             ((val) - ((val) % (alignment)))
 
+
+
 /*
  *
  */
 struct DevfsNode {
-  char name[32];
+  char name[DEVFS_NAME_LEN];
   int32_t inode_nr;
   int32_t parent_inode_nr;
   mode_t mode;
