@@ -19,7 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/debug.h>
-#include <sys/fsreq.h>
+#include <sys/iorequest.h>
 #include <sys/lists.h>
 #include <sys/mount.h>
 #include <sys/panic.h>
@@ -56,7 +56,6 @@ struct Config
 /*
  * Config settings, tweak as needed
  */
-#define NMSG_BACKLOG 							1			/* Number of inflight messages this driver can handle */
 #define NR_CACHE_BLOCKS         128     /* Keep 128 blocks in the local block cache */
 #define NR_READAHEAD_BLOCKS      16     /* Number of blocks to read ahead */
 #define NR_INODES                64     /* size of cached inode table */
@@ -630,26 +629,26 @@ int main(int argc, char *argv[]);
 void sigterm_handler(int signo);
 
 // ops_dir.c
-void ext2_lookup(struct fsreq *req);
-void ext2_readdir(struct fsreq *req);
-void ext2_mkdir(struct fsreq *req);
-void ext2_rmdir(struct fsreq *req);
+void ext2_lookup(iorequest_t *req);
+void ext2_readdir(iorequest_t *req);
+void ext2_mkdir(iorequest_t *req);
+void ext2_rmdir(iorequest_t *req);
 
 // ops_file.c
-void ext2_read(struct fsreq *req);
-void ext2_write(struct fsreq *req);
-void ext2_create(struct fsreq *req);
-void ext2_truncate(struct fsreq *req);
+void ext2_read(iorequest_t *req);
+void ext2_write(iorequest_t *req);
+void ext2_create(iorequest_t *req);
+void ext2_truncate(iorequest_t *req);
 
 // ops_link.c
-void ext2_close(struct fsreq *req);
-void ext2_rename(struct fsreq *req);
-void ext2_mknod(struct fsreq *req);
-void ext2_unlink(struct fsreq *req);
+void ext2_close(iorequest_t *req);
+void ext2_rename(iorequest_t *req);
+void ext2_mknod(iorequest_t *req);
+void ext2_unlink(iorequest_t *req);
 
 // ops_prot.c
-void ext2_chmod(struct fsreq *req);
-void ext2_chown(struct fsreq *req);
+void ext2_chmod(iorequest_t *req);
+void ext2_chown(iorequest_t *req);
 
 // read.c
 ssize_t read_file(ino_t ino_nr, size_t nrbytes, off64_t position);

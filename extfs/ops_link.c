@@ -12,12 +12,12 @@
  
 /* @brief   Handle VFS CMD_CLOSE message
  *
- * @param   fsreq, message header received by getmsg.
+ * @param   req, message header received by getmsg.
  *
  * Release any resources of a previously opened/looked up file.
  * For extfs this shouldn't be applicable.
  */
-void ext2_close(struct fsreq *req)
+void ext2_close(iorequest_t *req)
 {
   replymsg(portid, msgid, 0, NULL, 0);
 }
@@ -25,9 +25,9 @@ void ext2_close(struct fsreq *req)
 
 /* @brief   Handle VFS CMD_RENAME message
  *
- * @param   fsreq, message header received by getmsg.
+ * @param   req, message header received by getmsg.
  */
-void ext2_rename(struct fsreq *req)
+void ext2_rename(iorequest_t *req)
 {
   char src_name[NAME_MAX+1];
   char dst_name[NAME_MAX+1];
@@ -100,9 +100,9 @@ void ext2_rename(struct fsreq *req)
 
 /* @brief   Handle VFS CMD_MKNOD message
  *
- * @param   fsreq, message header received by getmsg.
+ * @param   req, message header received by getmsg.
  */
-void ext2_mknod(struct fsreq *req)
+void ext2_mknod(iorequest_t *req)
 {
   struct inode *dir_inode;  
   struct inode *inode;
@@ -144,9 +144,9 @@ void ext2_mknod(struct fsreq *req)
 
 /* @brief   Handle VFS CMD_UNLINK message
  *
- * @param   fsreq, message header received by getmsg.
+ * @param   req, message header received by getmsg.
  */
-void ext2_unlink(struct fsreq *req)
+void ext2_unlink(iorequest_t *req)
 {
   struct inode *dir_inode;
   struct inode *inode;

@@ -1,5 +1,5 @@
-
-sbin_PROGRAMS = ifs
+filesystemsdir = $(prefix)/system/filesystems
+filesystems_PROGRAMS = ifs
 
 ifs_SOURCES = \
   globals.c \

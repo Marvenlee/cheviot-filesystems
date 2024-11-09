@@ -12,9 +12,9 @@
 
 /* @brief   Read a file
  *
- * @param   fsreq, message header received by getmsg.
+ * @param   req, message header received by getmsg.
  */
-void ext2_read(struct fsreq *req)
+void ext2_read(iorequest_t *req)
 {
   ssize_t nbytes_read;
   ino_t ino_nr;
@@ -33,9 +33,9 @@ void ext2_read(struct fsreq *req)
 
 /* @brief   Write to a file
  *
- * @param   fsreq, message header received by getmsg.
+ * @param   req, message header received by getmsg.
  */
-void ext2_write(struct fsreq *req)
+void ext2_write(iorequest_t *req)
 {
   ssize_t nbytes_written;
   ino_t ino_nr;
@@ -53,11 +53,11 @@ void ext2_write(struct fsreq *req)
 
 /* @brief   Create a new file
  *
- * @param   fsreq, message header received by getmsg.
+ * @param   req, message header received by getmsg.
  */
-void ext2_create(struct fsreq *req)
+void ext2_create(iorequest_t *req)
 {
-  struct fsreply reply = {0};
+  ioreply_t reply = {0};
   struct inode *dir_inode;
   struct inode *inode;
   mode_t mode;
@@ -107,9 +107,9 @@ void ext2_create(struct fsreq *req)
 
 /* @brief   Truncate a file
  *
- * @param   fsreq, message header received by getmsg.
+ * @param   req, message header received by getmsg.
  */
-void ext2_truncate(struct fsreq *req)
+void ext2_truncate(iorequest_t *req)
 {  
   // TODO: FIXME:  sc = truncate_inode(struct inode *rip, off_t len)
   replymsg(portid, msgid, 0, NULL, 0);

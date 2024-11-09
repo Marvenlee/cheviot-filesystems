@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/fsreq.h>
+#include <sys/iorequest.h>
 #include <sys/mount.h>
 #include <sys/signal.h>
 #include <sys/stat.h>

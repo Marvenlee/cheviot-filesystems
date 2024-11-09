@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/fsreq.h>
+#include <sys/iorequest.h>
 #include <sys/mount.h>
 #include <sys/signal.h>
 #include <sys/stat.h>
@@ -40,7 +40,7 @@
 
 int main(int argc, char *argv[])
 {
-  struct fsreq req;
+  iorequest_t req;
   int sc;
   struct kevent ev;
   msgid_t msgid;
@@ -125,9 +125,9 @@ int main(int argc, char *argv[])
 /*
  */
 
-void fatLookup(msgid_t msgid, struct fsreq *req)
+void fatLookup(msgid_t msgid, iorequest_t *req)
 {
-  struct fsreply reply;
+  ioreply_t reply;
   char name[256];
   int32_t rc;
   struct FatNode *dirnode;
@@ -170,7 +170,7 @@ void fatLookup(msgid_t msgid, struct fsreq *req)
 /*
  *
  */
-void fatClose(msgid_t msgid, struct fsreq *req)
+void fatClose(msgid_t msgid, iorequest_t *req)
 {
   // Remove from cache of inodes
 
@@ -181,7 +181,7 @@ void fatClose(msgid_t msgid, struct fsreq *req)
 /*
  *
  */
-void fatCreate(msgid_t msgid, struct fsreq *req)
+void fatCreate(msgid_t msgid, iorequest_t *req)
 {
   replymsg(portid, msgid, -ENOTSUP, NULL, 0);
 }
@@ -190,7 +190,7 @@ void fatCreate(msgid_t msgid, struct fsreq *req)
 /*
  *
  */
-void fatRead(msgid_t msgid, struct fsreq *req)
+void fatRead(msgid_t msgid, iorequest_t *req)
 {
   ssize_t nbytes_read;
   struct FatNode *node;
@@ -224,7 +224,7 @@ void fatRead(msgid_t msgid, struct fsreq *req)
 /*
  *
  */
-void fatWrite(msgid_t msgid, struct fsreq *req)
+void fatWrite(msgid_t msgid, iorequest_t *req)
 {
   struct FatNode *node;
   ssize_t nbytes_written;
@@ -252,9 +252,9 @@ void fatWrite(msgid_t msgid, struct fsreq *req)
 /*
  *
  */
-void fatReadDir(msgid_t msgid, struct fsreq *req)
+void fatReadDir(msgid_t msgid, iorequest_t *req)
 {
-  struct fsreply reply;
+  ioreply_t reply;
   struct FatNode *node;
   struct FatDirEntry fdirent;
   struct dirent *dirent;
@@ -320,7 +320,7 @@ void fatReadDir(msgid_t msgid, struct fsreq *req)
 /*
  *
  */
-void fatMkNod(msgid_t msgid, struct fsreq *req)
+void fatMkNod(msgid_t msgid, iorequest_t *req)
 {
   replymsg(portid, msgid, -ENOTSUP, NULL, 0);
 }
@@ -329,7 +329,7 @@ void fatMkNod(msgid_t msgid, struct fsreq *req)
 /*
  *
  */
-void fatRename(msgid_t msgid, struct fsreq *req)
+void fatRename(msgid_t msgid, iorequest_t *req)
 {
   replymsg(portid, msgid, -ENOTSUP, NULL, 0);
 }
@@ -338,7 +338,7 @@ void fatRename(msgid_t msgid, struct fsreq *req)
 /*
  *
  */
-void fatTruncate(msgid_t msgid, struct fsreq *req)
+void fatTruncate(msgid_t msgid, iorequest_t *req)
 {
   struct FatNode *node;
   int32_t size;
@@ -364,7 +364,7 @@ void fatTruncate(msgid_t msgid, struct fsreq *req)
 /*
  *
  */
-void fatMkDir(msgid_t msgid, struct fsreq *req)
+void fatMkDir(msgid_t msgid, iorequest_t *req)
 {
   struct FatDirEntry dot, dotdot;
   struct FatDirEntry dirent;
@@ -453,7 +453,7 @@ void fatMkDir(msgid_t msgid, struct fsreq *req)
 /*
  *
  */
-void fatUnlink(msgid_t msgid, struct fsreq *req)
+void fatUnlink(msgid_t msgid, iorequest_t *req)
 {
   struct FatNode *parent;
   struct FatNode *node;
@@ -506,9 +506,9 @@ void fatUnlink(msgid_t msgid, struct fsreq *req)
  *
  */
 
-void fatRmDir(msgid_t msgid, struct fsreq *req)
+void fatRmDir(msgid_t msgid, iorequest_t *req)
 {
-  struct fsreply reply;
+  ioreply_t reply;
   struct FatNode *parent;
   struct FatNode *node;
   int status = -EINVAL;

@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/fsreq.h>
+#include <sys/iorequest.h>
 #include <sys/lists.h>
 #include <sys/mount.h>
 #include <sys/signal.h>
@@ -38,8 +38,6 @@
 /*
  * Constants
  */
-#define NMSG_BACKLOG 			8 
-
 #define FAT_TIME_CREATE 0
 #define FAT_TIME_MODIFY 1
 #define FAT_TIME_ACCESS 2
@@ -422,17 +420,17 @@ char *fat_path_advance(char *next, char *component);
 
 
 // main.c
-void fatLookup(int fd, struct fsreq *fsreq);
-void fatClose(int fd, struct fsreq *fsreq);
-void fatCreate(int fd, struct fsreq *req);
-void fatRead(int fd, struct fsreq *fsreq);
-void fatWrite(int fd, struct fsreq *req);
-void fatReadDir(int fd, struct fsreq *req);
-void fatUnlink(int fd, struct fsreq *req);
-void fatRmDir(int fd, struct fsreq *req);
-void fatMkDir(int fd, struct fsreq *fsreq);
-void fatMkNod(int fd, struct fsreq *req);
-void fatRename(int fd, struct fsreq *req);
+void fatLookup(int fd, iorequest_t *req);
+void fatClose(int fd, iorequest_t *req);
+void fatCreate(int fd, iorequest_t *req);
+void fatRead(int fd, iorequest_t *req);
+void fatWrite(int fd, iorequest_t *req);
+void fatReadDir(int fd, iorequest_t *req);
+void fatUnlink(int fd, iorequest_t *req);
+void fatRmDir(int fd, iorequest_t *req);
+void fatMkDir(int fd, iorequest_t *req);
+void fatMkNod(int fd, iorequest_t *req);
+void fatRename(int fd, iorequest_t *req);
 
 
 // cluster.c

@@ -1,5 +1,5 @@
-
-sbin_PROGRAMS = devfs
+filesystemsdir = $(prefix)/system/filesystems
+filesystems_PROGRAMS = devfs
 
 devfs_SOURCES = \
   globals.c \

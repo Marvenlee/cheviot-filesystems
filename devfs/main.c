@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/fsreq.h>
+#include <sys/iorequest.h>
 #include <sys/mount.h>
 #include <sys/signal.h>
 #include <sys/stat.h>
@@ -36,11 +36,11 @@
 #include "sys/debug.h"
 #include <sys/event.h>
 
-static void devfsLookup(msgid_t msgid_t, struct fsreq *req);
-static void devfsClose(msgid_t msgid_t, struct fsreq *req);
-static void devfsReaddir(msgid_t msgid_t, struct fsreq *req);
-static void devfsMknod(msgid_t msgid_t, struct fsreq *req);
-static void devfsUnlink(msgid_t msgid_t, struct fsreq *req);
+static void devfsLookup(msgid_t msgid_t, iorequest_t *req);
+static void devfsClose(msgid_t msgid_t, iorequest_t *req);
+static void devfsReaddir(msgid_t msgid_t, iorequest_t *req);
+static void devfsMknod(msgid_t msgid_t, iorequest_t *req);
+static void devfsUnlink(msgid_t msgid_t, iorequest_t *req);
 void sigterm_handler(int signo);
 
 
@@ -49,7 +49,7 @@ void sigterm_handler(int signo);
  */
 int main(int argc, char *argv[])
 {
-  struct fsreq req;
+  iorequest_t req;
   int sc;
   int nevents;
   struct kevent ev;
@@ -116,9 +116,9 @@ int main(int argc, char *argv[])
 /**
  *
  */
-static void devfsLookup(msgid_t msgid, struct fsreq *req)
+static void devfsLookup(msgid_t msgid, iorequest_t *req)
 {
-  struct fsreply reply;
+  ioreply_t reply;
   struct DevfsNode *devfs_dir_node;
   struct DevfsNode *node;
   char name[DEVFS_NAME_LEN + 1];
@@ -165,7 +165,7 @@ static void devfsLookup(msgid_t msgid, struct fsreq *req)
 /*
  *
  */
-static void devfsClose(msgid_t msgid, struct fsreq *req)
+static void devfsClose(msgid_t msgid, iorequest_t *req)
 {
   replymsg(portid, msgid, 0, NULL, 0);
 }
@@ -174,9 +174,9 @@ static void devfsClose(msgid_t msgid, struct fsreq *req)
 /*
  *
  */
-static void devfsReaddir(msgid_t msgid, struct fsreq *req)
+static void devfsReaddir(msgid_t msgid, iorequest_t *req)
 {
-  struct fsreply reply;
+  ioreply_t reply;
   struct DevfsNode *node;
   struct dirent *dirent;
   int len;
@@ -239,9 +239,9 @@ static void devfsReaddir(msgid_t msgid, struct fsreq *req)
 /*
  *
  */
-static void devfsMknod(msgid_t msgid, struct fsreq *req)
+static void devfsMknod(msgid_t msgid, iorequest_t *req)
 {
-  struct fsreply reply;
+  ioreply_t reply;
   struct DevfsNode *dir_node;
   struct DevfsNode *node;
   char name[256];
@@ -296,7 +296,7 @@ static void devfsMknod(msgid_t msgid, struct fsreq *req)
 /*
  *
  */
-static void devfsUnlink(msgid_t msgid, struct fsreq *req)
+static void devfsUnlink(msgid_t msgid, iorequest_t *req)
 {
   replymsg(portid, msgid, -ENOTSUP, NULL, 0);
 }

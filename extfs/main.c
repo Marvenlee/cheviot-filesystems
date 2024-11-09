@@ -19,7 +19,7 @@
 int main(int argc, char *argv[])
 {
   struct kevent ev;
-  struct fsreq req;
+  iorequest_t req;
   int sc;
   int nevents;
   struct sigaction sact;

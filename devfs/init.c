@@ -134,11 +134,7 @@ int mount_device(void)
   mnt_stat.st_size = 0;
   mnt_stat.st_blocks = 0;
 
-#if 0  
-  portid = createmsgport("/dev", MNTF_DEVFS_TTY_SPECIAL, &mnt_stat, NMSG_BACKLOG);
-#else
-  portid = createmsgport("/dev", 0, &mnt_stat, NMSG_BACKLOG);
-#endif
+  portid = createmsgport("/dev", 0, &mnt_stat);
   
   if (portid == -1) {
     log_error("Failed to mount /dev\n");

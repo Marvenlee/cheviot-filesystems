@@ -12,9 +12,9 @@
 
 /* @brief   Change the mode permission bits of a file or directory
  *
- * @param   fsreq, message header received by getmsg.
+ * @param   req, message header received by getmsg.
  */
-void ext2_chmod(struct fsreq *req)
+void ext2_chmod(iorequest_t *req)
 {
   struct inode *inode;
   
@@ -39,9 +39,9 @@ void ext2_chmod(struct fsreq *req)
 
 /* @brief   Change the owner and group of a file or directory
  * 
- * @param   fsreq, message header received by getmsg.
+ * @param   req, message header received by getmsg.
  */
-void ext2_chown(struct fsreq *req)
+void ext2_chown(iorequest_t *req)
 {
   struct inode *inode;
 

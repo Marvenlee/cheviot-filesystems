@@ -25,7 +25,6 @@
 
 /* Constants
  */
-#define NMSG_BACKLOG 			8
 #define DIRENTS_BUF_SZ 		4096
 
 

@@ -1,5 +1,5 @@
-
-sbin_PROGRAMS = extfs
+filesystemsdir = $(prefix)/system/filesystems
+filesystems_PROGRAMS = extfs
 
 extfs_SOURCES = \
   bitmap.c \

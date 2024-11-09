@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/fsreq.h>
+#include <sys/iorequest.h>
 #include <sys/mount.h>
 #include <sys/signal.h>
 #include <sys/stat.h>
@@ -89,7 +89,7 @@ void init(int argc, char *argv[]) {
   
   
   KLog("Mounting %s", config.mount_path);
-  portid = createmsgport(config.mount_path, 0, &stat, NMSG_BACKLOG);
+  portid = createmsgport(config.mount_path, 0, &stat);
 
   if (portid < 0) {
     KLog("***** exiting fat, mounting (%s) failed", config.mount_path);

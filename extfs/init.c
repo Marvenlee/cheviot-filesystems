@@ -78,7 +78,7 @@ void init(int argc, char *argv[])
   mnt_stat.st_blksize = 512;
   mnt_stat.st_blocks = superblock.s_blocks_count; // Size in 512 byte blocks
   
-  portid = createmsgport(config.mount_path, 0, &mnt_stat, NMSG_BACKLOG);
+  portid = createmsgport(config.mount_path, 0, &mnt_stat);
 
   if (portid == -1) {
     panic("ext2fs mounting failed");

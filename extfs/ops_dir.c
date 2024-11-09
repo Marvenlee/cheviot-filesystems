@@ -13,11 +13,11 @@
 
 /* @brief   Lookup an item in a directory
  *
- * @param   fsreq, message header received by getmsg.
+ * @param   req, message header received by getmsg.
  */
-void ext2_lookup(struct fsreq *req)
+void ext2_lookup(iorequest_t *req)
 {
-  struct fsreply reply = {0};
+  ioreply_t reply = {0};
   struct inode *dir_inode;
   struct inode *inode;
   char name[NAME_MAX+1];
@@ -70,12 +70,12 @@ void ext2_lookup(struct fsreq *req)
 
 /* @brief   Read a directory
  *
- * @param   fsreq, message header received by getmsg.
+ * @param   req, message header received by getmsg.
  */
-void ext2_readdir(struct fsreq *req)
+void ext2_readdir(iorequest_t *req)
 {
 	static char readdir_buf[512];
-  struct fsreply reply = {0};
+  ioreply_t reply = {0};
   struct inode *dir_inode;
   uint32_t sz;
   off64_t cookie;
@@ -109,11 +109,11 @@ void ext2_readdir(struct fsreq *req)
 
 /* @brief   Create a new directory and populate with "." and ".." entries
  *
- * @param   fsreq, message header received by getmsg.
+ * @param   req, message header received by getmsg.
  */
-void ext2_mkdir(struct fsreq *req)
+void ext2_mkdir(iorequest_t *req)
 {
-  struct fsreply reply = {0};
+  ioreply_t reply = {0};
   mode_t mode;
   uid_t uid;
   gid_t gid;
@@ -178,9 +178,9 @@ void ext2_mkdir(struct fsreq *req)
 
 /* @brief   Remove a directory
  *
- * @param   fsreq, message header received by getmsg.
+ * @param   req, message header received by getmsg.
  */
-void ext2_rmdir(struct fsreq *req)
+void ext2_rmdir(iorequest_t *req)
 {
   struct inode *dir_inode;
   struct inode *inode;

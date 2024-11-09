@@ -34,7 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/fsreq.h>
+#include <sys/iorequest.h>
 #include <sys/mount.h>
 #include <sys/signal.h>
 #include <sys/stat.h>
@@ -48,11 +48,11 @@
 static void exec_init(void);
 static void reap_processes(void);
 static void ifs_message_loop(void);
-static void ifs_lookup(msgid_t msgid, struct fsreq *req);
-static void ifs_close(msgid_t msgid, struct fsreq *req);
-static void ifs_read(msgid_t msgid, struct fsreq *req);
-static void ifs_write(msgid_t msgid, struct fsreq *req);
-static void ifs_readdir(msgid_t msgid, struct fsreq *req);
+static void ifs_lookup(msgid_t msgid, iorequest_t *req);
+static void ifs_close(msgid_t msgid, iorequest_t *req);
+static void ifs_read(msgid_t msgid, iorequest_t *req);
+static void ifs_write(msgid_t msgid, iorequest_t *req);
+static void ifs_readdir(msgid_t msgid, iorequest_t *req);
 void sigterm_handler(int signo);
 
 
@@ -148,7 +148,7 @@ static void reap_processes(void)
  */
 static void ifs_message_loop(void)
 {  
-  struct fsreq req;
+  iorequest_t req;
   int rc;
   int nevents;
   struct kevent ev;
@@ -213,11 +213,11 @@ static void ifs_message_loop(void)
 /* @brief   Handle VFS Lookup message
  *
  */
-static void ifs_lookup(msgid_t msgid, struct fsreq *req)
+static void ifs_lookup(msgid_t msgid, iorequest_t *req)
 {
   struct IFSNode *ifs_dir_node;
   struct IFSNode *node;
-  struct fsreply reply = {0};
+  ioreply_t reply = {0};
   char name[256];
   ssize_t sz;
     
@@ -254,7 +254,7 @@ static void ifs_lookup(msgid_t msgid, struct fsreq *req)
 /* @brief   Handle VFS close message
  *
  */
-static void ifs_close(msgid_t msgid, struct fsreq *req)
+static void ifs_close(msgid_t msgid, iorequest_t *req)
 {
   replymsg(portid, msgid, 0, NULL, 0);
 }
@@ -263,7 +263,7 @@ static void ifs_close(msgid_t msgid, struct fsreq *req)
 /* @brief   Handle VFS strategy message for reading files
  *
  */
-static void ifs_read(msgid_t msgid, struct fsreq *req)
+static void ifs_read(msgid_t msgid, iorequest_t *req)
 {
   struct IFSNode *rnode;
   ssize_t nbytes_read;
@@ -292,7 +292,7 @@ static void ifs_read(msgid_t msgid, struct fsreq *req)
 /* @brief   Handle VFS strategy message for reading files
  *
  */
-static void ifs_write(msgid_t msgid, struct fsreq *req)
+static void ifs_write(msgid_t msgid, iorequest_t *req)
 {
   log_warn("CMD_STRATEGY write not allowed on IFS");
   replymsg(portid, msgid, -EPERM, NULL, 0);  
@@ -302,9 +302,9 @@ static void ifs_write(msgid_t msgid, struct fsreq *req)
 /* @brief   Handle VFS readdir message to read a directory
  *
  */
-static void ifs_readdir(msgid_t msgid, struct fsreq *req)
+static void ifs_readdir(msgid_t msgid, iorequest_t *req)
 {
-  struct fsreply reply = {0};
+  ioreply_t reply = {0};
   struct IFSNode *node;
   struct dirent *dirent;
   int len;

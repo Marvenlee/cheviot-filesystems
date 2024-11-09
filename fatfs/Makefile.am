@@ -1,5 +1,5 @@
-
-sbin_PROGRAMS = fatfs
+filesystemsdir = $(prefix)/system/filesystems
+filesystems_PROGRAMS = fatfs
 
 fatfs_SOURCES = \
   cluster.c \

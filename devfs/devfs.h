@@ -9,7 +9,6 @@
 
 /* Constants
  */
-#define NMSG_BACKLOG 			8
 #define DEVFS_MAX_INODE 	128
 #define DIRENTS_BUF_SZ 		4096
 #define DEVFS_NAME_LEN    64
