@@ -32,6 +32,7 @@
 #include <sys/syscalls.h>
 #include <unistd.h>
 #include <sys/event.h>
+#include <sys/mman.h>
 
 
 /* @brief   Initialize IFS
@@ -56,11 +57,14 @@ void init_ifs(int argc, char *argv[])
   log_info("ifs image size = %u", (uint32_t)ifs_image_size);
 
   
-  if ((ifs_image = virtualallocphys((void *)0x20000000, ifs_image_size, 
-  																  PROT_READ | CACHE_WRITEBACK, ifs_image_phys)) == NULL) {
+  if ((ifs_image = mmap((void *)0x20000000, ifs_image_size, PROT_READ, MAP_PHYS | CACHE_WRITEBACK, 
+                        -1, ifs_image_phys)) == MAP_FAILED) {
+
   	log_info("Failed to map IFS image into process");
   	exit(EXIT_FAILURE);
   }
+
+
     
   ifs_header = (struct IFSHeader *) ifs_image;
   

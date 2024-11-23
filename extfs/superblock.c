@@ -21,6 +21,7 @@
 
 #include "ext2.h"
 #include "globals.h"
+#include <sys/mman.h>
 
 
 /* @brief   Read the superblock and Group Descriptor Table from disk into memory
@@ -97,11 +98,13 @@ int read_superblock(void)
   log_info("sb_gdt_position   = %u (lower 32 bits)", (uint32_t)sb_gdt_position);  
   log_info("sb_block_size  = %u", (uint32_t)sb_block_size);  
   
-  if(!(group_descs = virtualalloc(NULL, sb_groups_count * sizeof(struct group_desc), PROT_READWRITE))) {
+  group_descs = mmap(NULL, sb_groups_count * sizeof(struct group_desc), PROT_READ | PROT_WRITE, 0, -1, 0);
+  
+  if(group_descs == NULL) {
 	  panic("can't allocate group desc array");
   }
   
-  ondisk_group_descs = virtualalloc(NULL, sb_groups_count * sizeof(struct group_desc), PROT_READWRITE);
+  ondisk_group_descs = mmap(NULL, sb_groups_count * sizeof(struct group_desc), PROT_READ | PROT_WRITE, 0, -1, 0);
 
   if (ondisk_group_descs == NULL) {
 	  panic("can't allocate group desc array");
