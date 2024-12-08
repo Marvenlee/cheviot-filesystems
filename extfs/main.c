@@ -54,13 +54,14 @@ int main(int argc, char *argv[])
           case CMD_LOOKUP:
             ext2_lookup(&req);
             break;
-          
+
           case CMD_CLOSE:
             ext2_close(&req);
             break;
           
           case CMD_CREATE:
             ext2_create(&req);
+            break;
 
           case CMD_READDIR:
             ext2_readdir(&req);

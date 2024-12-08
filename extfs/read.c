@@ -77,9 +77,15 @@ ssize_t read_file(ino_t ino_nr, size_t nrbytes, off64_t position)
   if (res != 0) {
   	return res;
   }
+
+  inode->i_update |= ATIME;
+  inode_markdirty(inode);
   
-  inode->i_update |= ATIME;  
-  inode_markdirty(inode);  
+#if 0
+  // FIXME: Lazily update inode timestamp on close or sync.
+  write_inode(inode);
+#endif
+
   return total_xfered;
 }
 

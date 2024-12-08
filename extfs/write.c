@@ -8,7 +8,7 @@
  *   December 2023 (Marven Gilhespie) 
  */
  
-#define LOG_LEVEL_WARN
+#define LOG_LEVEL_INFO
 
 #include "ext2.h"
 #include "globals.h"
@@ -32,7 +32,7 @@ ssize_t write_file(ino_t ino_nr, size_t nbytes, off64_t position)
 
   if ((inode = find_inode(ino_nr)) == NULL) {
     log_error("write file to unknown inode");
-  	return -EINVAL;
+    return -EINVAL;
   }
   
   file_size = inode->odi.i_size;
@@ -43,44 +43,46 @@ ssize_t write_file(ino_t ino_nr, size_t nbytes, off64_t position)
   
   if (position > (off_t) (sb_max_size - nbytes)) {
     log_error("position out of bounds");
-	  return -EFBIG;
-	}
+    return -EFBIG;
+  }
 
   sc = 0;
   total_xfered = 0;
   
   /* Split the transfer into chunks that don't span blocks. */
   while (nbytes != 0) {
-	  off = (unsigned int) (position % sb_block_size);
-	  chunk_size = sb_block_size - off;
-	  if (chunk_size > nbytes) {
-		  chunk_size = nbytes;
+    off = (unsigned int) (position % sb_block_size);
+    chunk_size = sb_block_size - off;
+    if (chunk_size > nbytes) {
+      chunk_size = nbytes;
     }
     
-	  sc = write_chunk(inode, position, off, chunk_size, total_xfered);
+    sc = write_chunk(inode, position, off, chunk_size, total_xfered);
 
-	  if (sc != 0) {
-	    break;
+    if (sc != 0) {
+      break;
     }
     
-	  nbytes -= chunk_size;
-	  total_xfered += chunk_size;
-	  position += chunk_size;
+    nbytes -= chunk_size;
+    total_xfered += chunk_size;
+    position += chunk_size;
   }
 
   if (S_ISREG(inode->odi.i_mode) || S_ISDIR(inode->odi.i_mode)) {
-	  if (position > file_size) {
-	    inode->odi.i_size = position;
-	  }
+    if (position > file_size) {
+      inode->odi.i_size = position;
+    }
   }
 
   if (sc != 0) {
     log_error("write file error:%d", sc);
-  	return sc;
+    return sc;
   }
   
   inode->i_update |= CTIME | MTIME;
   inode_markdirty(inode);
+
+  write_inode(inode);
   return total_xfered;
 }
 
@@ -108,26 +110,28 @@ int write_chunk(struct inode *inode, off64_t position, size_t off, size_t chunk_
   block = read_map_entry(inode, position);
   
   if (block == NO_BLOCK) {
-	  if ((buf = new_block(inode, position)) == NULL) {
-		  return -EIO;
-		}
+    if ((buf = new_block(inode, position)) == NULL) {
+      log_error("write_block failed, out of blocks");
+      return -EIO;
+    }
   } else {
-	  if (chunk_size == sb_block_size) {
-  	  buf = get_block(cache, block, BLK_CLEAR);
-	  } else if (off == 0 && position >= inode->odi.i_size) {
-  	  buf = get_block(cache, block, BLK_CLEAR);
-		} else {
-  	  buf = get_block(cache, block, BLK_READ);
-		}
+    if (chunk_size == sb_block_size) {
+      buf = get_block(cache, block, BLK_CLEAR);
+    } else if (off == 0 && position >= inode->odi.i_size) {
+      buf = get_block(cache, block, BLK_CLEAR);
+    } else {
+      buf = get_block(cache, block, BLK_READ);
+    }
   }
 
   assert(buf != NULL);
   
-  sc = readmsg(portid, msgid, (uint8_t *)buf->data+off, chunk_size, msg_off);	  
+  sc = readmsg(portid, msgid, (uint8_t *)buf->data+off, chunk_size, msg_off);
   block_markdirty(buf);
   put_block(cache, buf);
   
   if (sc != chunk_size) {
+    log_info("write_chunk readmsg returned:%d", sc);
     return -EIO;
   }
   
