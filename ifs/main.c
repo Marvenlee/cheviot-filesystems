@@ -17,7 +17,7 @@
 /*
  * Initial File System driver. Implements a read-only file system for bootstrapping
  * the OS. This is the root process. It forks to create a process that mounts
- * and handles the IFS file system. The root process itself execs /sbin/root which
+ * and handles the IFS file system. The root process itself execs /sys/servers/sysinit which
  * assumes the role of the real root process. 
  */
 
@@ -42,6 +42,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <sys/event.h>
+#include <sys/sysinit.h>
 
 
 // Static prototypes
@@ -114,8 +115,8 @@ static void exec_init(void)
     // We are still the root process (pid 0), the root reaper process
     reap_processes();
   } else if (rc == 0) {
-    // We are the third process (pid 2), the init process.
-    rc = execl("/sbin/init", NULL);        
+    // We are the third process (pid 2), the sysinit process.
+    rc = execl(SYSINIT_EXE_PATH, NULL);
     
     log_error("ifs exec failed, %d", rc);
     exit(EXIT_FAILURE);  
