@@ -99,8 +99,6 @@ int process_args(int argc, char *argv[])
 
   strncpy(config.pathname, argv[optind], sizeof config.pathname);
 
-  log_info("devfs: mount path: %s", config.pathname);
-
   if (strlen(config.pathname) == 0) {
     log_error("devfs: empty mount pathname");
     return -1;
