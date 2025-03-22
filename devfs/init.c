@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#define LOG_LEVEL_WARN
+#define LOG_LEVEL_INFO
 
 #include "globals.h"
 #include "devfs.h"
@@ -38,6 +38,11 @@
  */
 void init (int argc, char *argv[])
 {
+  if (process_args(argc, argv) != 0) {
+    log_error("devfs: failed to process command line arguments");
+    exit(-1);
+  }
+
   if (init_devfs() != 0) {
     exit(-1);
   }
@@ -81,13 +86,23 @@ int process_args(int argc, char *argv[])
     case 'd':
       config.dev = atoi(optarg);
       break;
-      
+
     default:
       break;
     }
   }
 
   if (optind >= argc) {
+    log_error("missing mount pathname");
+    return -1;
+  }
+
+  strncpy(config.pathname, argv[optind], sizeof config.pathname);
+
+  log_info("devfs: mount path: %s", config.pathname);
+
+  if (strlen(config.pathname) == 0) {
+    log_error("devfs: empty mount pathname");
     return -1;
   }
 
@@ -103,10 +118,6 @@ int init_devfs(void)
   devfs_inode_table[0].inode_nr = 0;
   devfs_inode_table[0].parent_inode_nr = 0;    
   devfs_inode_table[0].name[0] = '\0';
-
-  devfs_inode_table[0].inode_nr = 1;
-  devfs_inode_table[0].parent_inode_nr = 0;
-  strcpy(devfs_inode_table[0].name, "tty");
   
   for (int t=1; t< DEVFS_MAX_INODE; t++) {
     devfs_inode_table[t].inode_nr = t;
@@ -134,10 +145,10 @@ int mount_device(void)
   mnt_stat.st_size = 0;
   mnt_stat.st_blocks = 0;
 
-  portid = createmsgport("/dev", 0, &mnt_stat);
+  portid = createmsgport(config.pathname, 0, &mnt_stat);
   
   if (portid == -1) {
-    log_error("Failed to mount /dev\n");
+    log_error("Failed to mount %s\n", config.pathname);
     exit(-1);
   }
 

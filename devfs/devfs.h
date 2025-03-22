@@ -5,6 +5,7 @@
 
 #include <sys/types.h>
 #include <stdint.h>
+#include <sys/syslimits.h>
 
 
 /* Constants
@@ -43,6 +44,7 @@ struct DevfsNode {
  */
 struct Config
 {
+  char pathname[PATH_MAX + 1];
   uid_t uid;
   gid_t gid;
   mode_t mode;

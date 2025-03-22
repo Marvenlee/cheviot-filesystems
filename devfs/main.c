@@ -140,7 +140,7 @@ static void devfsLookup(msgid_t msgid, iorequest_t *req)
   
   devfs_dir_node = &devfs_inode_table[req->args.lookup.dir_inode_nr];
 
-  for (int inode_nr = 2; inode_nr < DEVFS_MAX_INODE; inode_nr++) {
+  for (int inode_nr = 1; inode_nr < DEVFS_MAX_INODE; inode_nr++) {
     if (strcmp(devfs_inode_table[inode_nr].name, name) == 0) {
       node = &devfs_inode_table[inode_nr];
 
@@ -253,7 +253,7 @@ static void devfsMknod(msgid_t msgid, iorequest_t *req)
   
   dir_node = &devfs_inode_table[req->args.mknod.dir_inode_nr];
 
-  for (int inode_nr = 2; inode_nr < DEVFS_MAX_INODE; inode_nr++) {
+  for (int inode_nr = 1; inode_nr < DEVFS_MAX_INODE; inode_nr++) {
     if (strcmp(devfs_inode_table[inode_nr].name, name) == 0) {
       exists = true;
       break;
@@ -267,7 +267,7 @@ static void devfsMknod(msgid_t msgid, iorequest_t *req)
   
   node = NULL;
   
-  for (int inode_nr = 2; inode_nr < DEVFS_MAX_INODE; inode_nr++) {
+  for (int inode_nr = 1; inode_nr < DEVFS_MAX_INODE; inode_nr++) {
     if (devfs_inode_table[inode_nr].name[0] == '\0') {
       node = &devfs_inode_table[inode_nr];
       break;
