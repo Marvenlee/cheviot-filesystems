@@ -19,6 +19,17 @@
  * the OS. This is the root process. It forks to create a process that mounts
  * and handles the IFS file system. The root process itself execs /sys/servers/sysinit which
  * assumes the role of the real root process. 
+ *
+ * The kernel starts the IFS process as the root process with a process ID of 1. The kernel
+ * passes the IFS process the base address and size of IFS filesystem image in physical RAM
+ * so that it can be mapped into the IFS process's address space.
+ *
+ * The IFS root process makes a copy of itself by forking. The second IFS process becomes
+ * the IFS server by creating a message port at '/'.
+ * 
+ * The IFS root process replaces itself with /sbin/sysinit using execl(). Thereby making
+ * sysinit the root process with the process ID of 1.
+ * 
  */
 
 #define LOG_LEVEL_WARN
@@ -47,7 +58,6 @@
 
 // Static prototypes
 static void exec_init(void);
-static void reap_processes(void);
 static void ifs_message_loop(void);
 static void ifs_lookup(msgid_t msgid, iorequest_t *req);
 static void ifs_close(msgid_t msgid, iorequest_t *req);
@@ -57,22 +67,7 @@ static void ifs_readdir(msgid_t msgid, iorequest_t *req);
 void sigterm_handler(int signo);
 
 
-/* @Brief   Main function of Initial File System (IFS) driver and root process
- *
- * Kernel starts the IFS.exe task, proc(0) root process
- * IFS.exe is passed base address and size of IFS
- * IFS.exe process forks. IFS image now mapped into 2 processes, 
- * both read-only (no COW) unless perms change.
- *
- * Child process proc(1) becomes IFS file system handler and creates root mount "/".
- *
- * proc(0), IFS.exe unmaps IFS image
- * proc(0), waits for proc(1) to mount it's FS.
- *
- * <Optionally>
- * proc(0), IFS.exe does an Exec to become root.exe, no longer ifs.exe and only 1 process has IFS image mapped.
- * Root.exe forks and starts init.exe, proc(2)
- * </Optionally>
+/* @Brief   Main function of Initial File System (IFS) driver and "initial" root process
  *
  */
 int main(int argc, char *argv[])
@@ -86,12 +81,12 @@ int main(int argc, char *argv[])
   rc = fork();
 
   if (rc > 0) {
-    // We are still the root process (pid 0 ?)
+    // We are still the root process (pid 1 )
     close(portid);
     portid = -1;
     exec_init();
   } else if (rc == 0) {
-    // We are the second process (pid 1 ?), the IFS handler process
+    // We are the second process, the IFS handler process
     ifs_message_loop();
   } else {
     log_error("ifs fork failed, exiting: rc:%d", rc);
@@ -108,39 +103,13 @@ int main(int argc, char *argv[])
 static void exec_init(void)
 {
   int rc;
-
-  rc = fork();
-
-  if (rc > 0) {
-    // We are still the root process (pid 0), the root reaper process
-    reap_processes();
-  } else if (rc == 0) {
-    // We are the third process (pid 2), the sysinit process.
-    rc = execl(SYSINIT_EXE_PATH, NULL);
-    
-    log_error("ifs exec failed, %d", rc);
-    exit(EXIT_FAILURE);  
-  }
   
-  if (rc == -1) {
-    log_error("ifs second fork failed, rc=-1");
-    exit(EXIT_FAILURE);  
-  }  
-}
-
-
-/* @brief   Act as root process, reap any dead zombie processes
- * 
- */
-static void reap_processes(void)
-{
-  log_info("reap_processes");
+  // Replace the IFS root process image with sysinit (pid 1)
+  rc = execl(SYSINIT_EXE_PATH, NULL);
   
-  while(waitpid(-1, NULL, 0) != 0) {
-    sleep(5);
-  }
+  log_error("ifs exec failed, %d", rc);
   
-  log_info("reap_processes exiting, waitpid returned 0");
+  exit(EXIT_FAILURE);  
 }
 
 
